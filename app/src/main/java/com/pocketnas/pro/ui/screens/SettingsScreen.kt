@@ -60,7 +60,7 @@ private data class SettingEntry(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(vm: AppViewModel, onOpenWebAdmin: () -> Unit = {}) {
+fun SettingsScreen(vm: AppViewModel, onOpenWebAdmin: () -> Unit = {}, onOpenStorages: () -> Unit = {}) {
     val context = LocalContext.current
     var sub by remember { mutableStateOf<SubPage?>(null) }
     var showLangDialog by remember { mutableStateOf(false) }
@@ -104,6 +104,10 @@ fun SettingsScreen(vm: AppViewModel, onOpenWebAdmin: () -> Unit = {}) {
                 ),
             ),
             SettingGroup(
+                "存储",
+                listOf(
+                    SettingEntry("存储源管理", "挂载网盘 / 本地目录"),
+                ),
                 "通用",
                 listOf(
                     SettingEntry("网页管理后台", "OpenList 原生 Web 管理界面"),
@@ -151,6 +155,7 @@ fun SettingsScreen(vm: AppViewModel, onOpenWebAdmin: () -> Unit = {}) {
                                     "安全与密码" -> sub = SubPage.Security
                                     "媒体库" -> sub = SubPage.MediaLib
                                     "网页管理后台" -> onOpenWebAdmin()
+                                    "存储源管理" -> onOpenStorages()
                                     "通用" -> showLangDialog = true
                                 }
                             },
