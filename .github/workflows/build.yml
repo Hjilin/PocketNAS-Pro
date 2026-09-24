@@ -56,9 +56,9 @@ jobs:
       - name: Build Release APK (Unsigned)
         run: gradle assembleRelease --no-daemon --stacktrace
 
-      - name: Upload Release Unsigned APK
+      - name: Upload Release Signed APK
         uses: actions/upload-artifact@v4
         with:
           name: PocketNAS-Release-${{ github.sha }}
-          path: app/build/outputs/apk/release/app-release-unsigned.apk
+          path: app/build/outputs/apk/release/app-release.apk
           retention-days: 90
