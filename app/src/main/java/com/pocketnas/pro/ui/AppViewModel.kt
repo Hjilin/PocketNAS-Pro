@@ -143,12 +143,21 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         withContext(Dispatchers.IO) {
             try {
                 OpenListService.start(getApplication())
-                val sockFile = BinaryUtil.socketFile(getApplication())
+                // 等待 TCP 5244 真能连上（官方版内核）
                 var waited = 0
-                while (!sockFile.exists() && waited < 40) {
-                    Thread.sleep(500); waited++
+                var tcpReady = false
+                while (waited < 40) {
+                    try {
+                        java.net.Socket("127.0.0.1", 5244).use { tcpReady = true }
+                        break
+                    } catch (_: Exception) {
+                        Thread.sleep(500); waited++
+                    }
                 }
-                if (!sockFile.exists()) return@withContext null
+                if (!tcpReady) {
+                    LogStore.log("AUTH", "TCP 5244 等待超时(${waited * 500}ms)")
+                    return@withContext null
+                }
                 var tok = api().login(username.trim(), password)
                 if (tok == null) {
                     api().initSetup("admin", "admin123456")
