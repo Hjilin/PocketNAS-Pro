@@ -71,6 +71,36 @@ fun StorageAddScreen(
         }
     }
 
+    // 驱动信息加载完后自动填充默认值
+    LaunchedEffect(driverInfo) {
+        val info = driverInfo ?: return@LaunchedEffect
+        val defaults = mapOf(
+            "mount_path" to "/",
+            "order" to "0",
+            "thumbnail" to "true",
+            "directory_size" to "false",
+            "webdav_policy" to "302 redirect to upstream URL",
+            "web_proxy" to "false",
+            "down_proxy_url" to "",
+            "disable_proxy_sign" to "false",
+        )
+        info.common.forEach { f ->
+            if (values[f.name].isNullOrBlank()) {
+                values[f.name] = defaults[f.name] ?: f.default
+            }
+        }
+        info.additional.forEach { f ->
+            if (values[f.name].isNullOrBlank()) {
+                // select 字段默认选第一个选项
+                values[f.name] = when {
+                    f.type == "select" && f.options.isNotEmpty() && f.default.isBlank() -> f.options.first()
+                    f.type == "bool" && f.default.isBlank() -> "false"
+                    else -> f.default
+                }
+            }
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             title = { Text("添加存储源") },
