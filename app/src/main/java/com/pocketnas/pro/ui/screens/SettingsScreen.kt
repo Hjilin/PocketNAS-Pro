@@ -108,6 +108,8 @@ fun SettingsScreen(vm: AppViewModel, onOpenWebAdmin: () -> Unit = {}, onOpenStor
                 listOf(
                     SettingEntry("存储源管理", "挂载网盘 / 本地目录"),
                 ),
+            ),
+            SettingGroup(
                 "通用",
                 listOf(
                     SettingEntry("网页管理后台", "OpenList 原生 Web 管理界面"),
